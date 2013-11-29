@@ -57,7 +57,7 @@
 # Execute i18n tasks
 - name: edxapp | execute i18n tasks
   shell: >
-    SERVICE_VARIANT={{ item }} rake i18n:generate
+    SERVICE_VARIANT={{ item }} rake i18n:generate -t
     executable=/bin/bash
     chdir={{ edxapp_code_dir }}
   sudo_user: "{{ edxapp_user }}"
