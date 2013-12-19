@@ -92,6 +92,15 @@ fi
 
 cd playbooks/edx-east
 
+if [[ $basic_auth == "true" ]]; then
+    # vars specific to provisioning added to $extra-vars
+    cat << EOF_AUTH >> $extra_vars
+NGINX_HTPASSWD_USER: $auth_user
+NGINX_HTPASSWD_PASS: $auth_pass
+EOF_AUTH
+fi
+
+
 if [[ $recreate == "true" ]]; then
     # vars specific to provisioning added to $extra-vars
     cat << EOF >> $extra_vars
@@ -112,6 +121,7 @@ rabbitmq_refresh: True
 GH_USERS_PROMPT: '[$name_tag] '
 elb: $elb
 EOF
+
     cat $extra_vars
     # run the tasks to launch an ec2 instance from AMI
     ansible-playbook edx_provision.yml  -i inventory.ini -e "@${extra_vars}"  --user ubuntu
@@ -119,7 +129,7 @@ EOF
     if [[ $server_type == "full_edx_installation" ]]; then
         # additional tasks that need to be run if the
         # entire edx stack is brought up from an AMI
-        ansible-playbook deploy_rabbitmq.yml -i "${deploy_host}," -e "@${extra_vars}" --user ubuntu
+        ansible-playbook rabbitmq.yml -i "${deploy_host}," -e "@${extra_vars}" --user ubuntu
         ansible-playbook restart_supervisor.yml -i "${deploy_host}," -e "@${extra_vars}" --user ubuntu
     fi
 fi
@@ -143,7 +153,7 @@ fi
 # Run deploy tasks for the roles selected
 for i in "${!deploy[@]}"; do
     if [[ ${deploy[$i]} == "true" ]]; then
-        ansible-playbook deploy_${i}.yml -i "${deploy_host}," -e "@${extra_vars}" --user ubuntu --tags deploy
+        ansible-playbook ${i}.yml -i "${deploy_host}," -e "@${extra_vars}" --user ubuntu --tags deploy
     fi
 done
 

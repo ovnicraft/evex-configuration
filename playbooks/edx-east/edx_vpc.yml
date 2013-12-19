@@ -5,7 +5,6 @@
     - "{{ secure_dir }}/vars/{{ENVIRONMENT}}/{{CLOUDFORMATION_STACK_NAME}}.yml"
     - "{{ secure_dir }}/vars/common/common.yml"
   roles:
-    - common
     - gh_users
     - role: 'mongo'
       mongo_create_users: yes
@@ -15,7 +14,6 @@
 #    - "{{ secure_dir }}/vars/{{ENVIRONMENT}}/{{CLOUDFORMATION_STACK_NAME}}.yml"
 #    - "{{ secure_dir }}/vars/common/common.yml"
 #  roles:
-#    - common
 #    - gh_users
 #    - mongo
 - hosts: first_in_tag_role_edxapp
@@ -25,10 +23,8 @@
     - "{{ secure_dir }}/vars/{{ENVIRONMENT}}/{{CLOUDFORMATION_STACK_NAME}}.yml"
     - "{{ secure_dir }}/vars/common/common.yml"
   roles:
-    - common
     - gh_users
     - datadog
-    - supervisor
     - role: nginx
       nginx_sites:
       - lms
@@ -36,7 +32,7 @@
       - lms-preview
     - role: 'edxapp'
       edxapp_lms_env: 'lms.envs.load_test'
-      migrate_db: 'yes'
+      migrate_db: '{{ RUN_EDXAPP_MIGRATION }}'
       openid_workaround: 'yes'
     - splunkforwarder
 - hosts: tag_role_edxapp:!first_in_tag_role_edxapp
@@ -46,10 +42,8 @@
     - "{{ secure_dir }}/vars/{{ENVIRONMENT}}/{{CLOUDFORMATION_STACK_NAME}}.yml"
     - "{{ secure_dir }}/vars/common/common.yml"
   roles:
-    - common
     - gh_users
     - datadog
-    - supervisor
     - role: nginx
       nginx_sites:
       - lms
@@ -64,10 +58,8 @@
     - "{{ secure_dir }}/vars/{{ENVIRONMENT}}/{{CLOUDFORMATION_STACK_NAME}}.yml"
     - "{{ secure_dir }}/vars/common/common.yml"
   roles:
-    - common
     - gh_users
     - datadog
-    - supervisor
     - role: nginx
       nginx_sites:
       - lms
@@ -83,9 +75,7 @@
     - "{{ secure_dir }}/vars/{{ENVIRONMENT}}/{{CLOUDFORMATION_STACK_NAME}}.yml"
     - "{{ secure_dir }}/vars/common/common.yml"
   roles:
-    - common
     - gh_users
-    - supervisor
     - role: nginx
       nginx_sites:
       - xserver
@@ -98,9 +88,7 @@
     - "{{ secure_dir }}/vars/{{ENVIRONMENT}}/{{CLOUDFORMATION_STACK_NAME}}.yml"
     - "{{ secure_dir }}/vars/common/common.yml"
   roles:
-    - common
     - gh_users
-    - supervisor
     - rabbitmq
     - splunkforwarder
 - hosts: first_in_tag_role_xqueue
@@ -109,14 +97,12 @@
     - "{{ secure_dir }}/vars/{{ENVIRONMENT}}/{{CLOUDFORMATION_STACK_NAME}}.yml"
     - "{{ secure_dir }}/vars/common/common.yml"
   roles:
-    - common
     - gh_users
-    - supervisor
     - role: nginx
       nginx_sites:
       - xqueue
     - role: xqueue
-      migrate_db: 'yes'
+      migrate_db: '{{ RUN_XQUEUE_MIGRATION }}'
     - splunkforwarder
 - hosts: tag_role_xqueue:!first_in_tag_role_xqueue
   sudo: True
@@ -124,9 +110,7 @@
     - "{{ secure_dir }}/vars/{{ENVIRONMENT}}/{{CLOUDFORMATION_STACK_NAME}}.yml"
     - "{{ secure_dir }}/vars/common/common.yml"
   roles:
-    - common
     - gh_users
-    - supervisor
     - role: nginx
       nginx_sites:
       - xqueue
@@ -138,9 +122,7 @@
     - "{{ secure_dir }}/vars/{{ENVIRONMENT}}/{{CLOUDFORMATION_STACK_NAME}}.yml"
     - "{{ secure_dir }}/vars/common/common.yml"
   roles:
-    - common
     - gh_users
-    - supervisor
     - oraclejdk
     - elasticsearch
     - forum
