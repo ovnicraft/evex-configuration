@@ -23,7 +23,6 @@
     - edxlocal
     - mongo
     - edxapp
-    - demo
     - { role: 'rabbitmq', rabbitmq_ip: '127.0.0.1' }
     - { role: 'edxapp', celery_worker: True }
     - oraclejdk
